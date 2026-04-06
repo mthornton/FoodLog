@@ -1,4 +1,1 @@
 # Food Log
-
-
-# sk-proj--QnID1E1m-6_ntHBBhbsTqsib_A_TOfkLG_q8YUE51-PAoXya-RbF-zSUwuGrO4VQJa87mBiwwT3BlbkFJgJy0GKIKGNoBHgZ_MCgVBuKZwigsYZwli68EgT2LmOwIGWvqIP3aTHrjt3E0NDO_SHlfcL
