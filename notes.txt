@@ -1,0 +1,13 @@
+ create a venv
+python -m venv .venv
+
+ use venv
+.\.venv\Scripts\Activate.ps1
+    if error then : Set-ExecutionPolicy -ExecutionPolicy RemoteSigned -Scope CurrentUser
+
+ close venv
+ deactivate
+
+
+ install from requirements
+ pip install -r requirements.txt
