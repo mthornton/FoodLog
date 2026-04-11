@@ -1,5 +1,6 @@
 import os
 import json
+from datetime import datetime
 from openai import OpenAI
 from dotenv import load_dotenv
 from food_db import nutrition_for_food_list, ids_for_description, id_for_description
@@ -63,16 +64,28 @@ def nutrition_info_for_meal(meal):
         meal_nut_info.append(nut_info)
         print(nut_info)
 
+    write_daily_food_log(meal_nut_info)
+
     return meal_nut_info
 
 
-'''meal = [
-    {'item':'bread', 'weight':50},
-    {'item':'ham', 'weight':100},
-    {'item':'milk', 'weight':150}
-]
+def write_daily_food_log(daily_food_log_entry):
+    today = datetime.now().strftime("%Y-%m-%d")
+    filename = f"daily_food_log_{today}.log"
+    file_path = os.path.join(os.getcwd(), filename)
 
-print(nutrition_info_for_meal(meal))'''
+    with open(file_path, "a", encoding="utf-8") as file:
+        if os.path.getsize(file_path) > 0:
+            file.write("\n")
+
+        file.write(daily_food_log_entry)
+
+    return {
+        "status": "success",
+        "file_path": file_path,
+        "title": f"Daily Food Log {today}"
+    }
+
 
 prompt = ""
 
@@ -114,6 +127,12 @@ while prompt != "quit":
                     food_info = nutrition_info_for_meal(requested_meal)
                     tool_content = json.dumps(food_info)
                     print(f"Food info: {food_info}")
+                elif tool_name == "write_daily_food_log":
+                    tool_args = json.loads(tool_call.function.arguments)
+                    daily_food_log_entry = tool_args.get("daily_food_log_entry", "")
+                    write_result = write_daily_food_log(daily_food_log_entry)
+                    tool_content = json.dumps(write_result)
+                    print(f"Daily food log written: {write_result}")
                 else:
                     tool_content = json.dumps({
                         "error": f"Unsupported tool: {tool_name}"
