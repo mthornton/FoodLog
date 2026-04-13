@@ -73,17 +73,13 @@ def nutrition_for_food_list(fdc_id, weight_in_grams=100):
 
             if not rows:
                 print("No data found for the specified criteria.")
-                return []
+                return {}
 
-            # Refactor: Convert rows to a list of dictionaries
-            # This also handles adding the 'logged_at' key easily
-            result = []
-            for row in rows:
-                row_dict = dict(row)
-                row_dict['logged_at'] = None  # Or use a timestamp like datetime.now()
-                result.append(row_dict)
+            row_dict = dict(rows[0])
+            # row_dict['logged_at'] = datetime.now()
 
-            return result
+            return row_dict
+
 
     except sqlite3.Error as e:
         print(f"Database error: {e}")

@@ -58,18 +58,26 @@ def nutrition_info_for_meal(meal):
     meal_nut_info = []
 
     for item in meal:
+        # get all  the possible matches from the database
         list = ids_for_description(item['item'])
-        fdc_id = id_for_description(client, item['item'], list)
-        nut_info = nutrition_for_food_list(fdc_id, item['weight'])
-        meal_nut_info.append(nut_info)
-        print(nut_info)
 
-    write_daily_food_log(meal_nut_info)
+        # ask the llm to pick the best match
+        fdc_id = id_for_description(client, item['item'], list)
+
+        # get the nutrition data from the local database
+        nut_info = nutrition_for_food_list(fdc_id, item['weight'])
+
+        # write this item to log so we have a record
+        write_daily_food_log(nut_info)
+
+        # add item to full meal
+        meal_nut_info.append(nut_info)
 
     return meal_nut_info
 
 
 def write_daily_food_log(daily_food_log_entry):
+    print(f"Writing to file : {daily_food_log_entry}")
     today = datetime.now().strftime("%Y-%m-%d")
     filename = f"daily_food_log_{today}.log"
     file_path = os.path.join(os.getcwd(), filename)
@@ -78,7 +86,7 @@ def write_daily_food_log(daily_food_log_entry):
         if os.path.getsize(file_path) > 0:
             file.write("\n")
 
-        file.write(daily_food_log_entry)
+        json.dump(daily_food_log_entry, file, indent=4)
 
     return {
         "status": "success",
@@ -133,7 +141,7 @@ while prompt != "quit":
                     })
 
                 messages.append({
-                    "role": "tool",
+                    "role": "tool", 
                     "tool_call_id": tool_call.id,
                     "content": tool_content
                 })
